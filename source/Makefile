@@ -33,11 +33,14 @@ $(output) : $(object_files)
 	@echo start build...
 # `python3 -m pybind11 --includes` means -I/home/luke/anaconda3/include/python3.7m -I/home/luke/anaconda3/include on my machine
 # `python3-config --extension-suffix` means .cpython-37m-x86_64-linux-gnu.so on my machine
-	@g++ -shared $(object_files) -o $(output)
+# `-L/usr/local/lib/ -lgsl -lgslcblas` will link gsl library to my extension
+	@g++ -shared $(object_files) -o $(output) -L/usr/local/lib/ -lgsl -lgslcblas
 	@echo build finish!
 
 
-wrapper.o : wrapper.cpp source.h file.h
+
+# Warinig: if you use -O3 optimization flag, some warning infomation will be caused
+wrapper.o : wrapper.cpp source.h file.h RNG.h
 	@g++ -O3 -Wall -c -std=c++11 -fPIC `python3 -m pybind11 --includes` wrapper.cpp
 
 source.o : source.h source.cpp
