@@ -1,8 +1,14 @@
 #include "source.h"
+#include <iostream>
+#include <sys/timeb.h>
 
 
 using namespace std;
 
+struct timeb epoch_start_time;
+
+ofstream result_out;
+ofstream log_out;
 
 vector<int> get_negative_coding(const vector<int> &sequence)
 {
@@ -38,4 +44,20 @@ vector<int> get_delimeter_coding(const vector<int> &negative_coding)
     return delimeter_coding;
 }
 
+void __My_Assert(const char *expr_str, bool expr, const char *file, int line, const char *msg)
+{
+    if (!expr) {
+        std::cerr << "Assert failed:\t" << msg << "\n"
+                  << "Expected:\t" << expr_str << "\n"
+                  << "Source:\t\t" << file << ", line " << line << "\n";
+        abort();
+    }
+}
 
+bool print(std::ostream &os1, const std::string &str){
+    if(os1 << str << endl){
+        return true;
+    }
+
+    return false;
+}

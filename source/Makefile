@@ -26,8 +26,9 @@
 # I choose to use pybind11 to my new solution cause it has bettert support on C++11
 output := McgrpUtils`python3-config --extension-suffix`
 
-object_files := wrapper.o source.o file.o
+object_files := wrapper.o source.o file.o MCGRP.o
 
+CFLAGS += -D NODEBUG
 
 $(output) : $(object_files)
 	@echo start build...
@@ -40,15 +41,19 @@ $(output) : $(object_files)
 
 
 # Warinig: if you use -O3 optimization flag, some warning infomation will be caused
-wrapper.o : wrapper.cpp source.h file.h RNG.h
-	@g++ -O3 -Wall -c -std=c++11 -fPIC `python3 -m pybind11 --includes` wrapper.cpp
+wrapper.o : wrapper.cpp source.h file.h RNG.h MCGRP.h
+	@g++ $(CFLAGS) -O3 -Wall -c -std=c++11 -fPIC `python3 -m pybind11 --includes` wrapper.cpp
 
 source.o : source.h source.cpp
-	@g++ -O3 -Wall -c -std=c++11 -fPIC source.cpp
+	@g++ $(CFLAGS) -O3 -Wall -c -std=c++11 -fPIC source.cpp
 
 
 file.o : file.h file.cpp
-	@g++ -O3 -Wall -c -std=c++11 -fPIC file.cpp
+	@g++ $(CFLAGS) -O3 -Wall -c -std=c++11 -fPIC file.cpp
+
+
+MCGRP.o : MCGRP.h MCGRP.cpp
+	@g++ $(CFLAGS) -O3 -Wall -c -std=c++11 -fPIC MCGRP.cpp
 
 
 .PHONY : clean
